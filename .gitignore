@@ -1,3 +1,12 @@
 node_modules/
 .env
-data.sqlite*
+.env.*
+!.env.example
+
+data.sqlite
+data.sqlite-shm
+data.sqlite-wal
+
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
