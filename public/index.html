@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100c1b">
+  <title>Giftoria Club — мир подарков</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #100c1b;
+      --card: #1c152b;
+      --gold: #ffd889;
+      --muted: #b7adc9;
+      --purple: #9b72ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #35204f 0, var(--bg) 55%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 760px; margin: auto; padding: 22px 16px 48px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .brand { font-size:21px; font-weight:900; letter-spacing:-.7px; }
+    .brand span { color:var(--gold); }
+    .pill {
+      border:1px solid #ffffff25; border-radius:99px;
+      padding:9px 13px; background:#ffffff0b; font-size:13px;
+    }
+    .hero {
+      margin:30px 0 24px; padding:25px 20px; border-radius:25px;
+      background:linear-gradient(135deg,#51327b,#24172f 72%);
+      border:1px solid #ffffff20; overflow:hidden; position:relative;
+    }
+    .eyebrow { color:var(--gold); font-size:12px; font-weight:800; letter-spacing:2px; }
+    h1 { font-size:clamp(32px,8vw,48px); line-height:1.06; margin:14px 0; letter-spacing:-1.5px; }
+    .hero p { color:#e1d7ee; line-height:1.6; margin-bottom:0; }
+    .section-title { font-size:22px; margin:30px 0 14px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }
+    .case {
+      border:1px solid #ffffff19; border-radius:20px; padding:19px;
+      background:linear-gradient(155deg,#251a38,#171120);
+    }
+    .emoji { font-size:43px; margin:3px 0 12px; }
+    .case h3 { margin:0 0 7px; font-size:19px; }
+    .case p { color:var(--muted); font-size:13px; line-height:1.5; min-height:39px; }
+    .price { color:var(--gold); font-weight:800; margin:15px 0; }
+    button {
+      border:0; width:100%; border-radius:13px; padding:13px;
+      background:linear-gradient(100deg,#b08aff,#8960f0);
+      color:white; font-size:15px; font-weight:800; cursor:pointer;
+    }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .panel {
+      background:#ffffff08; border:1px solid #ffffff15;
+      border-radius:18px; padding:18px; margin-top:14px;
+    }
+    .balance { font-size:30px; font-weight:900; color:var(--gold); margin:8px 0; }
+    .muted { color:var(--muted); font-size:13px; line-height:1.6; }
+    #notice {
+      display:none; margin-top:18px; padding:14px; border-radius:13px;
+      background:#39263b; line-height:1.5; overflow-wrap:anywhere;
+    }
+    #notice.show { display:block; }
+    #inventory { line-height:1.9; }
+    footer { text-align:center; color:#8e829f; font-size:12px; margin-top:32px; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="brand">🎁 Giftoria <span>Club</span></div>
+      <div class="pill">✨ Клуб подарков</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">ТВОЙ МИР СЮРПРИЗОВ</div>
+      <h1>Открой свою<br>удачу.</h1>
+      <p>Открывай кейсы, собирай редкие предметы и создавай свою коллекцию в Giftoria Club.</p>
+    </section>
+
+    <section class="panel">
+      <div class="muted">ТВОЙ БАЛАНС</div>
+      <div class="balance" id="balance">— ⭐</div>
+      <div class="muted" id="welcome">Подключаем профиль…</div>
+    </section>
+
+    <h2 class="section-title">🎁 Выбери свой кейс</h2>
+    <div class="grid">
+      <article class="case">
+        <div class="emoji">🎁</div>
+        <h3>Starter Case</h3>
+        <p>Первый сюрприз для твоей коллекции.</p>
+        <div class="price">100 ⭐</div>
+        <button data-case="starter">Открыть кейс</button>
+      </article>
+      <article class="case">
+        <div class="emoji">💎</div>
+        <h3>Neon Case</h3>
+        <p>Яркие находки и редкие предметы.</p>
+        <div class="price">350 ⭐</div>
+        <button data-case="neon">Открыть кейс</button>
+      </article>
+      <article class="case">
+        <div class="emoji">👑</div>
+        <h3>Royal Case</h3>
+        <p>Премиальный кейс для коллекционеров.</p>
+        <div class="price">750 ⭐</div>
+        <button data-case="royal">Открыть кейс</button>
+      </article>
+    </div>
+
+    <div id="notice" role="status"></div>
+
+    <h2 class="section-title">🏆 Моя коллекция</h2>
+    <section class="panel">
+      <div id="inventory" class="muted">Здесь появятся твои предметы.</div>
+    </section>
+
+    <h2 class="section-title">📜 Последние операции</h2>
+    <section class="panel">
+      <div id="history" class="muted">История появится после подключения.</div>
+    </section>
+
+    <footer>Giftoria Club · Демо-режим · Виртуальные монеты не имеют денежной стоимости</footer>
+  </main>
+
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp;
+    const notice = document.getElementById('notice');
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    function message(text) {
+      notice.textContent = text;
+      notice.classList.add('show');
+    }
+
+    async function api(url, options = {}) {
+      const initData = tg && tg.initData ? tg.initData : '';
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-telegram-init-data': initData,
+          ...(options.headers || {})
+        }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Ошибка сервера: ' + response.status);
+      return data;
+    }
+
+    function render(user) {
+      document.getElementById('balance').textContent =
+        Number(user.balance).toLocaleString('ru-RU') + ' ⭐';
+      document.getElementById('welcome').textContent =
+        'Привет, ' + (user.firstName || 'друг') + '! Твоя коллекция ждёт тебя.';
+
+      const inventory = document.getElementById('inventory');
+      inventory.textContent = '';
+      if (!user.inventory || !user.inventory.length) {
+        inventory.textContent = 'Пока пусто. Открой первый кейс!';
+      } else {
+        user.inventory.forEach(item => {
+          const row = document.createElement('div');
+          row.textContent = '🎁 ' + item.item_name + ' · ' + item.rarity;
+          inventory.appendChild(row);
+        });
+      }
+
+      const history = document.getElementById('history');
+      history.textContent = '';
+      if (!user.history || !user.history.length) {
+        history.textContent = 'Операций пока нет.';
+      } else {
+        user.history.forEach(item => {
+          const row = document.createElement('div');
+          row.textContent = (item.amount > 0 ? '+' : '') +
+            item.amount + ' ⭐ · ' + item.reason;
+          history.appendChild(row);
+        });
+      }
+    }
+
+    async function loadProfile() {
+      if (!tg || !tg.initData) {
+        document.getElementById('welcome').textContent =
+          'Открой приложение через Telegram, чтобы подключить профиль.';
+        message('Страница загружена! Для работы баланса и кейсов открой Giftoria Club из Telegram Mini App. Нужна настроенная авторизация бота.');
+        return;
+      }
+      try {
+        render(await api('/api/me'));
+        notice.classList.remove('show');
+      } catch (error) {
+        document.getElementById('welcome').textContent = 'Не удалось подключить профиль.';
+        message(error.message + ' Проверь BOT_TOKEN в настройках сервиса Render.');
+      }
+    }
+
+    document.querySelectorAll('[data-case]').forEach(button => {
+      button.addEventListener('click', async () => {
+        if (!tg || !tg.initData) {
+          message('Сначала открой Giftoria Club внутри Telegram.');
+          return;
+        }
+        button.disabled = true;
+        button.textContent = 'Открываем…';
+        try {
+          const result = await api('/api/cases/' + button.dataset.case + '/open', {
+            method: 'POST',
+            body: JSON.stringify({})
+          });
+          render(result);
+          message('🎉 Тебе выпал предмет: ' + result.item.name + ' · ' + result.item.rarity + '!');
+          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        } catch (error) {
+          message(error.message);
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Открыть кейс';
+        }
+      });
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
